@@ -30,7 +30,7 @@ public:
 
 protected:
 
-	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = "Effect", meta = (ExposeOnSpawn))
 	UEffectData* EffectData;
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = "Effect", meta = (ExposeOnSpawn))
