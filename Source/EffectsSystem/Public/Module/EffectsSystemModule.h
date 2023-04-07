@@ -1,12 +1,12 @@
-// Copyright shenkns Health-Damage System Developed With Unreal Engine. All Rights Reserved 2022.
+// Copyright shenkns Effects System Developed With Unreal Engine. All Rights Reserved 2023.
 
 #pragma once
 
 #include "Modules/ModuleManager.h"
 
-HEALTHDAMAGESYSTEM_API DECLARE_LOG_CATEGORY_EXTERN(LogEffectsSystem, Log, All);
+EFFECTSSYSTEM_API DECLARE_LOG_CATEGORY_EXTERN(LogEffectsSystem, Log, All);
 
-class FHealthDamageSystemModule : public IModuleInterface
+class FEffectsSystemModule : public IModuleInterface
 {
 	
 };

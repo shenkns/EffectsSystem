@@ -1,4 +1,4 @@
-// Copyright shenkns Effects System Developed With Unreal Engine. All Rights Reserved 2022.
+// Copyright shenkns Effects System Developed With Unreal Engine. All Rights Reserved 2023.
 
 using UnrealBuildTool;
 
@@ -28,6 +28,7 @@ public class EffectsSystem : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"NetCore",
+				"HealthDamageSystem",
 				"DataSystem",
 				"LogSystem"
 			}
