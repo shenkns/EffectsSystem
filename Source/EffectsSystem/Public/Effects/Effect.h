@@ -49,7 +49,8 @@ public:
 
 	virtual UWorld* GetWorld() const override;
 
-	void InitEffect(UEffectData* Data);
+	void InitEffect();
+	void InitEffectWithData(UEffectData* Data);
 
 	// Getters
 	UFUNCTION(BlueprintPure, Category = "Effect")
@@ -67,11 +68,11 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Effect")
 	bool IsActive() const;
 
+	UFUNCTION(BlueprintNativeEvent, Category = "Effect")
+	virtual void Stop();
+	
 protected:
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Effect")
 	virtual void Start();
-
-	UFUNCTION(BlueprintNativeEvent, Category = "Effect")
-	virtual void Stop();
 };

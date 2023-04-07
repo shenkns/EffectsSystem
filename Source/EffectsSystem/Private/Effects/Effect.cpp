@@ -32,14 +32,21 @@ UWorld* UEffect::GetWorld() const
 	return GetOuter() ? GetOuter()->GetWorld() : nullptr;
 }
 
-void UEffect::InitEffect(UEffectData* Data)
+void UEffect::InitEffect()
+{
+	if(!EffectData) return;
+	
+	GetWorld()->GetTimerManager().SetTimer(EffectTimer, this, &UEffect::Stop, Duration);
+	Start();
+
+	LOG(LogEffectsSystem, "%s Initialized With %s", *GetName(), *EffectData->GetName())
+}
+
+void UEffect::InitEffectWithData(UEffectData* Data)
 {
 	EffectData = Data;
 
-	LOG(LogEffectsSystem, "%s Initialized With %s", *GetName(), *EffectData->GetName())
-
-	GetWorld()->GetTimerManager().SetTimer(EffectTimer, this, &UEffect::Stop, Duration);
-	Start();
+	InitEffect();
 }
 
 UEffectsComponent* UEffect::GetEffectsComponent() const
@@ -64,6 +71,7 @@ bool UEffect::IsActive() const
 
 void UEffect::Start_Implementation()
 {
+	GetWorld()->GetTimerManager().UnPauseTimer(EffectTimer);
 	OnEffectStarted.Broadcast(this);
 	
 	LOG(LogEffectsSystem, "%s Effect Started On %s", *GetName(), *GetOwner()->GetName())
@@ -71,5 +79,8 @@ void UEffect::Start_Implementation()
 
 void UEffect::Stop_Implementation()
 {
+	GetWorld()->GetTimerManager().PauseTimer(EffectTimer);
+	Duration = GetWorld()->GetTimerManager().GetTimerRemaining(EffectTimer);
+	
 	OnEffectEnded.Broadcast(this);
 }

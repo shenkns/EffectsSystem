@@ -20,6 +20,14 @@ class EFFECTSSYSTEM_API UEffectsComponent : public UActorComponent
 public:
 	
 	UEffectsComponent();
+
+public:
+
+	UPROPERTY(BlueprintAssignable, Category = "Effects")
+	FEffectEvent OnEffectAdded;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Effects")
+	FEffectEvent OnEffectRemoved;
 	
 protected:
 
@@ -37,12 +45,23 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = "Effects")
+	void AddEffect(UEffect* Effect);
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = "Effects")
+	void RemoveEffect(UEffect* Effect);
+
 	// Getters
 	UFUNCTION(BlueprintPure, Category = "Effects", meta = (CompactNodeTitle = "Effect", DeterminesOutputType = "Class"))
 	UEffect* GetEffectByData(TSubclassOf<UEffect> Class, UEffectData* Data) const;
 
 	template<typename T>
 	T* GetEffectByData(UEffectData* Data) const;
+
+private:
+
+	UFUNCTION()
+	void OnEffectEnded(UEffect* Effect);
 };
 
 template <typename T>

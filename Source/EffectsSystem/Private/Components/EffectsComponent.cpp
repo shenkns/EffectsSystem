@@ -23,7 +23,7 @@ void UEffectsComponent::BeginPlay()
 		for(const TTuple<UEffectData*, UEffect*>& Pair : EffectsMap)
 		{
 			Pair.Value->Rename(nullptr, this);
-			Pair.Value->InitEffect(Pair.Key);
+			Pair.Value->InitEffectWithData(Pair.Key);
 
 			EffectsArray.Add(Pair.Value);
 		}
@@ -62,4 +62,30 @@ UEffect* UEffectsComponent::GetEffectByData(TSubclassOf<UEffect> Class, UEffectD
 	});
 	
 	return Out ? *Out : nullptr;
+}
+
+void UEffectsComponent::OnEffectEnded(UEffect* Effect)
+{
+	RemoveEffect(Effect);
+}
+
+void UEffectsComponent::AddEffect(UEffect* Effect)
+{
+	Effect->Rename(nullptr, this);
+	
+	EffectsArray.Add(Effect);
+	Effect->OnEffectEnded.AddUniqueDynamic(this, &UEffectsComponent::OnEffectEnded);
+
+	Effect->InitEffect();
+
+	OnEffectAdded.Broadcast(Effect);
+}
+
+void UEffectsComponent::RemoveEffect(UEffect* Effect)
+{
+	EffectsArray.Remove(Effect);
+
+	Effect->Stop();
+
+	OnEffectRemoved.Broadcast(Effect);
 }
