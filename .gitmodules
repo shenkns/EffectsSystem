@@ -1,0 +1,3 @@
+[submodule "Plugins/SkillsSystem"]
+	path = Plugins/SkillsSystem
+	url = https://github.com/shenkns/SkillsSystem.git
