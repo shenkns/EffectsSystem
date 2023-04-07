@@ -51,6 +51,9 @@ public:
 
 	void InitEffect();
 	void InitEffectWithData(UEffectData* Data);
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Effect")
+	void Start();
 	
 	UFUNCTION(BlueprintNativeEvent, Category = "Effect")
     void Stop();
@@ -70,9 +73,4 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Effect")
 	bool IsActive() const;
-	
-protected:
-
-	UFUNCTION(BlueprintNativeEvent, Category = "Effect")
-	void Start();
 };
