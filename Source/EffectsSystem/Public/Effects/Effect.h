@@ -30,7 +30,7 @@ public:
 
 protected:
 
-	UPROPERTY(Replicated, Category = "Effect")
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
 	UEffectData* EffectData;
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = "Effect", meta = (ExposeOnSpawn))
@@ -51,6 +51,9 @@ public:
 
 	void InitEffect();
 	void InitEffectWithData(UEffectData* Data);
+	
+	UFUNCTION(BlueprintNativeEvent, Category = "Effect")
+    void Stop();
 
 	// Getters
 	UFUNCTION(BlueprintPure, Category = "Effect")
@@ -67,12 +70,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Effect")
 	bool IsActive() const;
-
-	UFUNCTION(BlueprintNativeEvent, Category = "Effect")
-	virtual void Stop();
 	
 protected:
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Effect")
-	virtual void Start();
+	void Start();
 };

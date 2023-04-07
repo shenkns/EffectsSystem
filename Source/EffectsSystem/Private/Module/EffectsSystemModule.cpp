@@ -2,6 +2,6 @@
 
 #include "Module/EffectsSystemModule.h"
 
-IMPLEMENT_MODULE(FEffectsSystemModule, HealthDamageSystem)
+IMPLEMENT_MODULE(FEffectsSystemModule, EffesctSystem)
 
-HEALTHDAMAGESYSTEM_API DEFINE_LOG_CATEGORY(LogEffectsSystem);
+EFFECTSSYSTEM_API DEFINE_LOG_CATEGORY(LogEffectsSystem);
