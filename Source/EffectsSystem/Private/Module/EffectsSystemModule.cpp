@@ -2,6 +2,6 @@
 
 #include "Module/EffectsSystemModule.h"
 
-IMPLEMENT_MODULE(FEffectsSystemModule, EffesctSystem)
+IMPLEMENT_MODULE(FEffectsSystemModule, EffectsSystem)
 
 EFFECTSSYSTEM_API DEFINE_LOG_CATEGORY(LogEffectsSystem);
