@@ -34,5 +34,5 @@ void UEffectDOT::Stop_Implementation()
 
 void UEffectDOT::DealDamage_Implementation()
 {
-	UHealthComponent::Damage(GetOwner(), Damage, nullptr, nullptr);
+	UHealthComponent::Damage(GetOwner(), Damage, Instigator, Causer);
 }

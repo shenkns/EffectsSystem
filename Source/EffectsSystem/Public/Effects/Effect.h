@@ -3,11 +3,13 @@
 #pragma once
 
 #include "UObject/Object.h"
+
 #include "Effect.generated.h"
 
 class UEffectData;
 class UEffectsComponent;
 class UEffect;
+class APlayerState;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEffectEvent, UEffect*, Effect);
 
@@ -31,7 +33,13 @@ public:
 protected:
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = "Effect", meta = (ExposeOnSpawn))
-	UEffectData* EffectData;
+	UEffectData* Data;
+	
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = "Effect", meta = (ExposeOnSpawn))
+	APlayerState* Instigator;
+
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = "Effect", meta = (ExposeOnSpawn))
+	UObject* Causer;
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = "Effect", meta = (ExposeOnSpawn))
 	float Duration;
@@ -50,7 +58,7 @@ public:
 	virtual UWorld* GetWorld() const override;
 
 	void InitEffect();
-	void InitEffectWithData(UEffectData* Data);
+	void InitEffectWithData(UEffectData* EffectData, APlayerState* EffectInstigator, UObject* EffectCauser);
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Effect")
 	void Start();
@@ -60,7 +68,7 @@ public:
 
 	// Getters
 	UFUNCTION(BlueprintPure, Category = "Effect")
-	UEffectData* GetEffectData() const { return EffectData; }
+	UEffectData* GetEffectData() const { return Data; }
 
 	UFUNCTION(BlueprintPure, Category = "Effect")
 	UEffectsComponent* GetEffectsComponent() const;

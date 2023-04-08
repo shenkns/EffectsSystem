@@ -6,6 +6,7 @@
 #include "LogSystem.h"
 #include "Net/UnrealNetwork.h"
 #include "Engine/ActorChannel.h"
+#include "GameFramework/PlayerState.h"
 
 UEffectsComponent::UEffectsComponent()
 {
@@ -23,7 +24,10 @@ void UEffectsComponent::BeginPlay()
 		for(const TTuple<UEffectData*, UEffect*>& Pair : EffectsMap)
 		{
 			Pair.Value->Rename(nullptr, this);
-			Pair.Value->InitEffectWithData(Pair.Key);
+			Pair.Value->InitEffectWithData(Pair.Key,
+				GetOwner()->GetInstigatorController() ? GetOwner()->GetInstigatorController()->GetPlayerState<APlayerState>() : nullptr,
+				GetOwner()
+			);
 
 			EffectsArray.Add(Pair.Value);
 		}

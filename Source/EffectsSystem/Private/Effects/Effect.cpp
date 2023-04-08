@@ -17,7 +17,9 @@ void UEffect::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
 {
 	UObject::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(UEffect, EffectData)
+	DOREPLIFETIME(UEffect, Data)
+	DOREPLIFETIME(UEffect, Instigator)
+	DOREPLIFETIME(UEffect, Causer)
 
 	DOREPLIFETIME(UEffect, Duration)
 	
@@ -34,17 +36,20 @@ UWorld* UEffect::GetWorld() const
 
 void UEffect::InitEffect()
 {
-	if(!EffectData) return;
-	
 	GetWorld()->GetTimerManager().SetTimer(EffectTimer, this, &UEffect::Stop, Duration);
 	Start();
 
-	LOG(LogEffectsSystem, "%s Initialized With %s", *GetName(), *EffectData->GetName())
+	if(Data)
+	{
+		LOG(LogEffectsSystem, "%s Initialized With %s", *GetName(), *Data->GetName())
+	}
 }
 
-void UEffect::InitEffectWithData(UEffectData* Data)
+void UEffect::InitEffectWithData(UEffectData* EffectData, APlayerState* EffectInstigator, UObject* EffectCauser)
 {
-	EffectData = Data;
+	Data = EffectData;
+	Instigator = EffectInstigator;
+	Causer = EffectCauser;
 
 	InitEffect();
 }
