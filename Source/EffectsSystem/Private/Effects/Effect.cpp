@@ -36,7 +36,9 @@ UWorld* UEffect::GetWorld() const
 
 void UEffect::InitEffect()
 {
+	GetWorld()->GetTimerManager().ClearTimer(EffectTimer);
 	GetWorld()->GetTimerManager().SetTimer(EffectTimer, this, &UEffect::Stop, Duration);
+	
 	Start();
 
 	if(Data)
@@ -45,13 +47,29 @@ void UEffect::InitEffect()
 	}
 }
 
-void UEffect::InitEffectWithData(UEffectData* EffectData, APlayerState* EffectInstigator, UObject* EffectCauser)
+void UEffect::ResetEffect(float EffectDuration)
 {
-	Data = EffectData;
-	Instigator = EffectInstigator;
-	Causer = EffectCauser;
+	Duration = EffectDuration;
 
 	InitEffect();
+}
+
+void UEffect::InitInstigateData(APlayerState* EffectInstigator, UObject* EffectCauser)
+{
+	Instigator = EffectInstigator;
+	Causer = EffectCauser;
+}
+
+bool UEffect::Stack_Implementation(UEffect* StackableEffect)
+{
+	if(Data->bStackable)
+	{
+		ResetEffect(GetEffectRemainingTime() + StackableEffect->GetEffectRemainingTime());
+
+		return true;
+	}
+
+	return false;
 }
 
 UEffectsComponent* UEffect::GetEffectsComponent() const
@@ -66,7 +84,12 @@ AActor* UEffect::GetOwner() const
 
 float UEffect::GetEffectRemainingTime() const
 {
-	return GetWorld()->GetTimerManager().GetTimerRemaining(EffectTimer);
+	if(IsActive())
+	{
+		return GetWorld()->GetTimerManager().GetTimerRemaining(EffectTimer);
+	}
+
+	return Duration;
 }
 
 bool UEffect::IsActive() const

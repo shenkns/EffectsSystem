@@ -21,15 +21,13 @@ void UEffectsComponent::BeginPlay()
 
 	if(GetOwner()->HasAuthority())
 	{
-		for(const TTuple<UEffectData*, UEffect*>& Pair : EffectsMap)
+		for(UEffect* Effect : StartEffects)
 		{
-			Pair.Value->Rename(nullptr, this);
-			Pair.Value->InitEffectWithData(Pair.Key,
-				GetOwner()->GetInstigatorController() ? GetOwner()->GetInstigatorController()->GetPlayerState<APlayerState>() : nullptr,
+			Effect->InitInstigateData(GetOwner()->GetInstigatorController() ? GetOwner()->GetInstigatorController()->GetPlayerState<APlayerState>() : nullptr,
 				GetOwner()
 			);
-
-			EffectsArray.Add(Pair.Value);
+			
+			AddEffect(Effect);
 		}
 
 		LOG(LogEffectsSystem, "%d Effects Initialized", EffectsArray.Num())
@@ -75,6 +73,14 @@ void UEffectsComponent::OnEffectEnded(UEffect* Effect)
 
 void UEffectsComponent::AddEffect(UEffect* Effect)
 {
+	if(UEffect* StackableEffect = GetEffectByData<UEffect>(Effect->GetEffectData()))
+	{
+		if(StackableEffect->Stack(Effect))
+		{
+			return;
+		}
+	}
+	
 	Effect->Rename(nullptr, this);
 	
 	EffectsArray.Add(Effect);
@@ -88,6 +94,7 @@ void UEffectsComponent::AddEffect(UEffect* Effect)
 void UEffectsComponent::RemoveEffect(UEffect* Effect)
 {
 	EffectsArray.Remove(Effect);
+	Effect->OnEffectEnded.RemoveDynamic(this, &UEffectsComponent::OnEffectEnded);
 
 	Effect->Stop();
 

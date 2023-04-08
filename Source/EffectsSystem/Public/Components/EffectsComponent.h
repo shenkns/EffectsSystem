@@ -32,7 +32,7 @@ public:
 protected:
 
 	UPROPERTY(EditAnywhere, Instanced, Category = "Effects")
-	TMap<UEffectData*, UEffect*> EffectsMap;
+	TArray<UEffect*> StartEffects;
 
 	UPROPERTY(Replicated)
 	TArray<UEffect*> EffectsArray;
@@ -67,7 +67,7 @@ private:
 template <typename T>
 T* UEffectsComponent::GetEffectByData(UEffectData* Data) const
 {
-	const UEffect* Out = EffectsArray.FindByPredicate([&](const UEffect* Src)
+	UEffect* const* Out = EffectsArray.FindByPredicate([&](const UEffect* Src)
 	{
 		return Src->GetEffectData() == Data;
 	});

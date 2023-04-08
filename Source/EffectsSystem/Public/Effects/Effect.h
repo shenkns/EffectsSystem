@@ -58,7 +58,6 @@ public:
 	virtual UWorld* GetWorld() const override;
 
 	void InitEffect();
-	void InitEffectWithData(UEffectData* EffectData, APlayerState* EffectInstigator, UObject* EffectCauser);
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Effect")
 	void Start();
@@ -66,9 +65,24 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Effect")
     void Stop();
 
+	UFUNCTION(BlueprintCallable, Category = "Effect")
+	void ResetEffect(float EffectDuration);
+
+	UFUNCTION(BlueprintCallable, Category = "Effect")
+	void InitInstigateData(APlayerState* EffectInstigator, UObject* EffectCauser);
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Effect")
+	bool Stack(UEffect* StackableEffect);
+
 	// Getters
 	UFUNCTION(BlueprintPure, Category = "Effect")
 	UEffectData* GetEffectData() const { return Data; }
+
+	UFUNCTION(BlueprintPure, Category = "Effect")
+	APlayerState* GetInstigator() const { return Instigator; }
+	
+	UFUNCTION(BlueprintPure, Category = "Effect")
+	UObject* GetCauser() const { return Causer; }
 
 	UFUNCTION(BlueprintPure, Category = "Effect")
 	UEffectsComponent* GetEffectsComponent() const;

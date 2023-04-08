@@ -9,4 +9,9 @@ UCLASS()
 class EFFECTSSYSTEM_API UEffectData : public UData
 {
 	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
+	bool bStackable;
 };
