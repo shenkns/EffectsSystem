@@ -34,7 +34,7 @@ protected:
 	UPROPERTY(EditAnywhere, Instanced, Category = "Effects")
 	TArray<UEffect*> StartEffects;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated, VisibleInstanceOnly, Category = "Effects")
 	TArray<UEffect*> EffectsArray;
 
 public:
@@ -52,6 +52,9 @@ public:
 	void RemoveEffect(UEffect* Effect);
 
 	// Getters
+	UFUNCTION(BlueprintPure, Category = "Effects", meta = (CompactNodeTitle = "Effects"))
+	TArray<UEffect*> GetEffects() const { return EffectsArray; }
+	
 	UFUNCTION(BlueprintPure, Category = "Effects", meta = (CompactNodeTitle = "Effect", DeterminesOutputType = "Class"))
 	UEffect* GetEffectByData(TSubclassOf<UEffect> Class, UEffectData* Data) const;
 
