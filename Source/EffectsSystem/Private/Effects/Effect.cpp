@@ -22,6 +22,7 @@ void UEffect::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
 	DOREPLIFETIME(UEffect, Causer)
 
 	DOREPLIFETIME(UEffect, Duration)
+	DOREPLIFETIME(UEffect, RemainingTime)
 	
 	if(const UBlueprintGeneratedClass* BPClass = Cast<UBlueprintGeneratedClass>(GetClass()))
 	{
@@ -38,6 +39,7 @@ void UEffect::InitEffect()
 {
 	GetWorld()->GetTimerManager().ClearTimer(EffectTimer);
 	GetWorld()->GetTimerManager().SetTimer(EffectTimer, this, &UEffect::Stop, Duration);
+	GetWorld()->GetTimerManager().SetTimer(TickTimer, this, &UEffect::Tick, 0.01, true);
 	
 	Start();
 
@@ -84,12 +86,17 @@ AActor* UEffect::GetOwner() const
 
 float UEffect::GetEffectRemainingTime() const
 {
-	if(IsActive())
+	if(GetOwner()->HasAuthority())
 	{
-		return GetWorld()->GetTimerManager().GetTimerRemaining(EffectTimer);
+		if(IsActive())
+		{
+			return GetWorld()->GetTimerManager().GetTimerRemaining(EffectTimer);
+		}
+
+		return Duration;
 	}
 
-	return Duration;
+	return RemainingTime;
 }
 
 bool UEffect::IsActive() const
@@ -97,8 +104,25 @@ bool UEffect::IsActive() const
 	return GetWorld()->GetTimerManager().IsTimerActive(EffectTimer);
 }
 
+void UEffect::Tick()
+{
+	if(GetWorld())
+	{
+		EffectTick(GetWorld()->GetDeltaSeconds());
+	}
+}
+
+void UEffect::EffectTick_Implementation(float DeltaTime)
+{
+	if(GetWorld())
+	{
+		RemainingTime = GetWorld()->GetTimerManager().GetTimerRemaining(EffectTimer);
+	}
+}
+
 void UEffect::Start_Implementation()
 {
+	GetWorld()->GetTimerManager().UnPauseTimer(TickTimer);
 	GetWorld()->GetTimerManager().UnPauseTimer(EffectTimer);
 	OnEffectStarted.Broadcast(this);
 	
@@ -108,6 +132,7 @@ void UEffect::Start_Implementation()
 void UEffect::Stop_Implementation()
 {
 	GetWorld()->GetTimerManager().PauseTimer(EffectTimer);
+	GetWorld()->GetTimerManager().PauseTimer(TickTimer);
 	Duration = GetWorld()->GetTimerManager().GetTimerRemaining(EffectTimer);
 	
 	OnEffectEnded.Broadcast(this);

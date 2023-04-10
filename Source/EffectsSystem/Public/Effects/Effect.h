@@ -49,6 +49,12 @@ private:
 	UPROPERTY()
 	FTimerHandle EffectTimer;
 
+	UPROPERTY(Replicated)
+	float RemainingTime;
+
+	UPROPERTY()
+	FTimerHandle TickTimer;
+
 public:
 
 	virtual bool IsSupportedForNetworking() const override { return true; }
@@ -95,4 +101,13 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Effect")
 	bool IsActive() const;
+
+protected:
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Effect")
+	void EffectTick(float DeltaTime);
+
+private:
+
+	void Tick();
 };

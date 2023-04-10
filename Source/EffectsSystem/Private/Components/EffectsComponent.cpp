@@ -71,6 +71,22 @@ void UEffectsComponent::OnEffectEnded(UEffect* Effect)
 	RemoveEffect(Effect);
 }
 
+void UEffectsComponent::MulticastEffectRemoved_Implementation(UEffect* RemovedEffect)
+{
+	if(!GetOwner()->HasAuthority())
+	{
+		OnEffectRemoved.Broadcast(RemovedEffect);
+	}
+}
+
+void UEffectsComponent::MulticastEffectAdded_Implementation(UEffect* AddedEffect)
+{
+	if(!GetOwner()->HasAuthority())
+	{
+		OnEffectAdded.Broadcast(AddedEffect);
+	}
+}
+
 void UEffectsComponent::AddEffect(UEffect* Effect)
 {
 	if(UEffect* StackableEffect = GetEffectByData<UEffect>(Effect->GetEffectData()))
@@ -88,7 +104,10 @@ void UEffectsComponent::AddEffect(UEffect* Effect)
 
 	Effect->InitEffect();
 
+	GetOwner()->ForceNetUpdate();
+
 	OnEffectAdded.Broadcast(Effect);
+	MulticastEffectAdded(Effect);
 }
 
 void UEffectsComponent::RemoveEffect(UEffect* Effect)
@@ -99,4 +118,5 @@ void UEffectsComponent::RemoveEffect(UEffect* Effect)
 	Effect->Stop();
 
 	OnEffectRemoved.Broadcast(Effect);
+	MulticastEffectRemoved(Effect);
 }

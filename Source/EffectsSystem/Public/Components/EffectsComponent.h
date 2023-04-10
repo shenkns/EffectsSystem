@@ -65,6 +65,12 @@ private:
 
 	UFUNCTION()
 	void OnEffectEnded(UEffect* Effect);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastEffectAdded(UEffect* AddedEffect);
+	
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastEffectRemoved(UEffect* RemovedEffect);
 };
 
 template <typename T>
