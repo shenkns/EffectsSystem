@@ -30,6 +30,26 @@ void UEffect::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
 	}
 }
 
+bool UEffect::CallRemoteFunction(UFunction* Function, void* Parms, FOutParmRec* OutParms, FFrame* Stack)
+{
+	AActor* Owner = Cast<AActor>(GetOuter());
+	if (!Owner) return false;
+	
+	UNetDriver* NetDriver = Owner->GetNetDriver();
+	if (!NetDriver) return false;
+
+	NetDriver->ProcessRemoteFunction(Owner, Function, Parms, OutParms, Stack, this);
+
+	return true;
+}
+
+int32 UEffect::GetFunctionCallspace(UFunction* Function, FFrame* Stack)
+{
+	AActor* Owner = Cast<AActor>(GetOuter());
+	
+	return Owner ? Owner->GetFunctionCallspace(Function, Stack) : FunctionCallspace::Local;
+}
+
 UWorld* UEffect::GetWorld() const
 {
 	return GetOuter() ? GetOuter()->GetWorld() : nullptr;

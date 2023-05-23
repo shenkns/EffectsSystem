@@ -60,6 +60,10 @@ public:
 	virtual bool IsSupportedForNetworking() const override { return true; }
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	virtual bool CallRemoteFunction(UFunction* Function, void* Parms, FOutParmRec* OutParms, FFrame* Stack) override;
+    
+    virtual int32 GetFunctionCallspace(UFunction* Function, FFrame* Stack) override;
 
 	virtual UWorld* GetWorld() const override;
 
